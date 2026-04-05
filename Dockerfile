@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     novnc \
     websockify \
     netcat-openbsd \
+    x11-xserver-utils \
     && rm -rf /var/lib/apt/lists/*
 
 COPY start.sh /start.sh
