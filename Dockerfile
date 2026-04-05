@@ -2,7 +2,7 @@ FROM debian:12-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install only minimal required packages
+# Install minimal GUI + VNC + noVNC
 RUN apt-get update && apt-get install -y \
     xfce4-session \
     xfce4-panel \
@@ -13,24 +13,13 @@ RUN apt-get update && apt-get install -y \
     xvfb \
     novnc \
     websockify \
-    supervisor \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Create startup script
-RUN mkdir -p /opt/startup
+# Copy startup script
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
 
-RUN echo '#!/bin/bash\n\
-export DISPLAY=:0\n\
-Xvfb :0 -screen 0 1024x768x16 &\n\
-sleep 2\n\
-openbox &\n\
-xfce4-panel &\n\
-x11vnc -display :0 -nopw -forever -shared &\n\
-websockify --web=/usr/share/novnc/ 6080 localhost:5900\n\
-' > /opt/startup/start.sh
+# Render requires a port (value doesn't matter here)
+EXPOSE 10000
 
-RUN chmod +x /opt/startup/start.sh
-
-EXPOSE 6080
-
-CMD ["/opt/startup/start.sh"]
+CMD ["/start.sh"]
