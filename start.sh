@@ -2,19 +2,17 @@
 
 export DISPLAY=:0
 
-echo "Starting virtual display..."
-Xvfb :0 -screen 0 1024x768x16 &
+echo "Starting Xvfb..."
+Xvfb :0 -screen 0 800x600x16 &
+sleep 3  # give it time
 
-sleep 2
-
-echo "Starting window manager..."
+echo "Starting openbox..."
 openbox &
+sleep 1
 
-echo "Starting XFCE panel..."
-xfce4-panel &
+echo "Starting x11vnc..."
+x11vnc -display :0 -nopw -forever -shared -noxdamage &
+sleep 2  # IMPORTANT - wait before websockify starts
 
-echo "Starting VNC server..."
-x11vnc -display :0 -nopw -forever -shared &
-
-echo "Starting noVNC on port $PORT..."
+echo "Starting websockify on $PORT..."
 websockify --web=/usr/share/novnc/ $PORT localhost:5900
