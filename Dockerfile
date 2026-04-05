@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     openbox \
     novnc \
     websockify \
+    netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
 COPY start.sh /start.sh
